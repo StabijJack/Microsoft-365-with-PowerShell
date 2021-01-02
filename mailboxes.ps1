@@ -1,29 +1,37 @@
-﻿
+﻿# set export Directory
+Add-Type -AssemblyName System.Windows.Forms
+$fileBrowser = New-Object System.Windows.Forms.FolderBrowserDialog -Property @{ 
+    Description = 'Select a Export Directory'
+    RootFolder = [Environment]::GetFolderPath('personal') 
+}
+$null = $fileBrowser.ShowDialog()
+$DownLoadDirectory = $fileBrowser.SelectedPath
+
 Import-Module ExchangeOnlineManagement
 Connect-ExchangeOnline -ShowProgress $true
 
-$DownLoadDirectory = Get-ItemPropertyValue 'HKCU:\software\microsoft\windows\currentversion\explorer\shell folders\' -Name '{374DE290-123F-4565-9164-39C4925E467B}'
-$TimeStamp = Get-Date -UFormat %Y-%m-%d_%H-%M
+# $DownLoadDirectory = Get-ItemPropertyValue 'HKCU:\software\microsoft\windows\currentversion\explorer\shell folders\' -Name '{374DE290-123F-4565-9164-39C4925E467B}'
 
-$MailboxFileName ="MailboxExport-"+$TimeStamp +".csv"
+
+$MailboxFileName ="MailboxExport.csv"
 $MailboxFile = $DownLoadDirectory + "\" + $MailboxFileName
 
-Get-Mailbox -ResultSize Unlimited | Select * |Export-CSV -NoTypeInformation -LiteralPath $MailboxFile
+Get-Mailbox -ResultSize Unlimited | Select-Object * |Export-CSV -NoTypeInformation -LiteralPath $MailboxFile
 
-$MailUserFileName ="MailUserExport-"+$TimeStamp +".csv"
+$MailUserFileName ="MailUserExport.csv"
 $MailUserFile = $DownLoadDirectory + "\" + $MailUserFileName
 
-Get-MailUser -ResultSize Unlimited |select * | export-csv -NoTypeInformation -LiteralPath $MailUserFile
+Get-MailUser -ResultSize Unlimited |Select-Object * | export-csv -NoTypeInformation -LiteralPath $MailUserFile
 
-$UserFileName ="UserExport-"+$TimeStamp +".csv"
+$UserFileName ="UserExport.csv"
 $UserFile = $DownLoadDirectory + "\" + $UserFileName
 
-Get-User -ResultSize Unlimited |select * | export-csv -NoTypeInformation -LiteralPath $UserFile
+Get-User -ResultSize Unlimited |Select-Object * | export-csv -NoTypeInformation -LiteralPath $UserFile
 
-$PermissionFileName ="PermissionExport-"+$TimeStamp +".csv"
+$PermissionFileName ="PermissionExport.csv"
 $PermissionFile = $DownLoadDirectory + "\" + $PermissionFileName
 
 
-Get-Mailbox | Get-MailboxPermission |select *| Export-Csv -NoTypeInformation -LiteralPath $PermissionFile
+Get-Mailbox | Get-MailboxPermission |Select-Object *| Export-Csv -NoTypeInformation -LiteralPath $PermissionFile
 
 Disconnect-ExchangeOnline
