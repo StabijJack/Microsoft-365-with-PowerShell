@@ -2,7 +2,7 @@
 Add-Type -AssemblyName System.Windows.Forms
 $fileBrowser = New-Object System.Windows.Forms.FolderBrowserDialog -Property @{ 
     Description = 'Select a Export Directory'
-    RootFolder = [Environment]::GetFolderPath('personal') 
+    RootFolder = 'personal'
 }
 $null = $fileBrowser.ShowDialog()
 $DownLoadDirectory = $fileBrowser.SelectedPath
